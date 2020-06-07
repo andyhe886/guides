@@ -196,6 +196,7 @@ Web
 
 * Avoid rendering delays caused by synchronous loading.
 * Use HTTPS instead of HTTP when linking to assets.
+* Prefer using a UTF-8 charset
 
 JavaScript
 ----------
@@ -207,13 +208,42 @@ JavaScript
   HTML elements. #462
 * Avoid targeting HTML elements using classes intended for styling
   purposes. #462
+* Use [Prettier] to ensure consistent formatting across the codebase. Run
+  Prettier during CI and, if any files would be changed, fail the build.
 
 [babel]: https://babeljs.io/
+[Prettier]: https://prettier.io/
 
 HTML
 ----
 
-* Use `<button>` tags over `<a>` tags for actions.
+* Use lowercase text for elements and attributes
+* Use double quotes to wrap element attributes
+* Use closing tags for all [normal elements][normal-elements]
+* Prefer a HTML5 doctype
+* Ensure elements are scoped properly
+  * Elements such as `<title>` and `<meta>` must be placed within the page's 
+    `<head>` element
+  * Elements such as `<p>`, `<nav>`, `<div>`, etc. should be placed within the 
+    page's `<body>` element
+* Ensure `id`s are unique
+* Prefer appending attribute values instead of declaring redundant attribute names
+  * For example, if adding a class of `c-card--featured`, add it to the existing
+    class declaration (`class="c-card c-card--featured"`, not 
+    `class="c-card" class="c-card--featured"`)
+* Avoid using emoji and other exotic characters as values for attributes such as
+  `class`, `id`, `data`, and `aria-*`.
+* Avoid restricting viewport zooming
+* Ensure [parent elements contain no more than 60 child elements][excessive-dom-size]
+* Use `<button>` elements instead of `<a>` elements for actions.
+  * Use `type="button"` for button elements used outside of forms to prevent the
+    browser from trying to submit form data
+  * Use a `href` attribute for `<a>` elements with a valid location
+* Ensure heading elements are used to section content, and heading levels are 
+  not skipped
+
+[excessive-dom-size]: https://developers.google.com/web/tools/lighthouse/audits/dom-size
+[normal-elements]: https://html.spec.whatwg.org/multipage/syntax.html#normal-elements
 
 CSS
 ---
@@ -229,8 +259,17 @@ CSS
   project-specific browser support that is needed.
 * Prefer `overflow: auto` to `overflow: scroll`, because `scroll` will always
   display scrollbars outside of macOS, even when content fits in the container.
+* [Create breakpoints][breakpoints] when the content "breaks," and is awkward or 
+  difficult to read,
+  * Avoid creating breakpoints that target specific devices
+  * Prefer `em` units instead of `px` for breakpoint values
+  * Start with the smallest viewport size and work upwards using 
+    `min-width`/`min-height`
+* Use [double colon syntax][pseudo-element-syntax] for pseudo-elements
 
 [autoprefixer]: https://github.com/postcss/autoprefixer
+[breakpoints]: http://bradfrost.com/blog/post/7-habits-of-highly-effective-media-queries/
+[pseudo-element-syntax]: https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements#Syntax
 
 Sass
 ----
@@ -239,6 +278,13 @@ Sass
   (e.g. `image-url` and `font-url`), so that Rails' Asset Pipeline will re-write
   the correct paths to assets.
 * Prefer mixins to `@extend`.
+* Use maps and variables to codify and centralize breakpoint values
+  * Prefer abstract names such as `small`, `medium`, `large`, etc. instead of 
+    specific devices
+  * Nest breakpoints inside of the relevant selector
+  * If a component needs a specific breakpoint to work, keep it with the 
+    relevant component partial. If other components need the same value, 
+    integrate it into the centralized breakpoint list
 
 [sass-rails]: https://github.com/rails/sass-rails
 [asset-helpers]: https://github.com/rails/sass-rails#asset-helpers
